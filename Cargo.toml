@@ -22,3 +22,9 @@ libsodium-sys-stable = { git = "https://github.com/jedisct1/libsodium-sys-stable
 
 [features]
 allow-coredumps = []
+# Enable this feature if you want to use the latest stable version of libsodium
+fetch-latest = ["libsodium-sys-stable/fetch-latest"]
+# Enable optimized build for the current platform
+optimized = ["libsodium-sys-stable/optimized"]
+# Do not build deprecated APIs
+minimal = ["libsodium-sys-stable/minimal"]
