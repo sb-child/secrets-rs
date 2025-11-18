@@ -16,7 +16,8 @@ use std::thread;
 /// provide the following guarantees:
 ///
 /// * [`mlock(2)`][mlock] is called on the underlying memory
-/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in use
+/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in
+///   use
 /// * the underlying memory is zeroed out when no longer in use
 /// * they are borrowed for their entire lifespan, so cannot be moved
 /// * they are best-effort compared in constant time
@@ -203,13 +204,17 @@ impl<T: Bytes> Drop for Secret<T> {
     /// Ensures that the [`Secret`]'s underlying memory is `munlock`ed
     /// and zeroed when it leaves scope.
     fn drop(&mut self) {
-        // When we call sodium_munlock on some data, it actually unlocks the entire page that
-        // contains the memory. If two locked items were on the same page, then the second one
-        // fails because it was already unlocked. On Linux, this does now throw an error. On
-        // Windows, it does. We'll ignore it for now, and provide a better fix later.
+        // When we call sodium_munlock on some data, it actually unlocks the
+        // entire page that contains the memory. If two locked items
+        // were on the same page, then the second one fails because it
+        // was already unlocked. On Linux, this does now throw an error. On
+        // Windows, it does. We'll ignore it for now, and provide a better fix
+        // later.
         if unsafe { !sodium::munlock(&raw mut self.data) }
             && !(cfg!(target_family = "windows")
-                && (std::io::Error::last_os_error().raw_os_error() == Some(158))) {
+                && (std::io::Error::last_os_error().raw_os_error()
+                    == Some(158)))
+        {
             // [`Drop::drop`] is called during stack unwinding, so we
             // may be in a panic already.
             assert!(
