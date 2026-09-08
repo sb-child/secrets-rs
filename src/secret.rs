@@ -16,7 +16,8 @@ use std::thread;
 /// provide the following guarantees:
 ///
 /// * [`mlock(2)`][mlock] is called on the underlying memory
-/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in use
+/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in
+///   use
 /// * the underlying memory is zeroed out when no longer in use
 /// * they are borrowed for their entire lifespan, so cannot be moved
 /// * they are best-effort compared in constant time
@@ -78,7 +79,6 @@ use std::thread;
 /// ```
 ///
 /// [mlock]: http://man7.org/linux/man-pages/man2/mlock.2.html
-//
 // Aligned to the target's memory page size so that no two `Secret`s
 // can share a page; `munlock` operates on whole pages and would
 // otherwise unlock a sibling secret's memory while it is still live.
@@ -86,14 +86,23 @@ use std::thread;
 // `Secret::new` asserts at runtime that the chosen alignment is at
 // least the page size reported by the OS, catching any target whose
 // real page size exceeds what this table promises.
-#[cfg_attr(any(target_arch = "x86",         target_arch   = "x86_64"), repr(align(4096)))]
-#[cfg_attr(all(target_arch = "aarch64",     target_vendor = "apple"),  repr(align(16384)))]
-#[cfg_attr(all(target_arch = "aarch64", not(target_vendor = "apple")), repr(align(65536)))]
-#[cfg_attr(not(any(
-    target_arch = "x86",
-    target_arch = "x86_64",
-    target_arch = "aarch64",
-)),                                                                    repr(align(65536)))]
+#[cfg_attr(any(target_arch = "x86", target_arch = "x86_64"), repr(align(4096)))]
+#[cfg_attr(
+    all(target_arch = "aarch64", target_vendor = "apple"),
+    repr(align(16384))
+)]
+#[cfg_attr(
+    all(target_arch = "aarch64", not(target_vendor = "apple")),
+    repr(align(65536))
+)]
+#[cfg_attr(
+    not(any(
+        target_arch = "x86",
+        target_arch = "x86_64",
+        target_arch = "aarch64",
+    )),
+    repr(align(65536))
+)]
 pub struct Secret<T: Bytes> {
     /// The internal protected memory for the [`Secret`].
     data: T,
@@ -293,7 +302,7 @@ mod tests {
     #[test]
     fn it_aligns_to_at_least_the_page_size() {
         let page = page_size::get();
-        assert!(align_of::<Secret<u8>>()       >= page);
+        assert!(align_of::<Secret<u8>>() >= page);
         assert!(align_of::<Secret<[u8; 32]>>() >= page);
         assert!(align_of::<Secret<[u64; 4]>>() >= page);
     }
@@ -306,7 +315,7 @@ mod tests {
         Secret::<u64>::zero(|a| {
             let addr_a = &raw const *a as usize;
             let addr_b = Secret::<u64>::zero(|b| &raw const *b as usize);
-            let page   = page_size::get();
+            let page = page_size::get();
             assert_ne!(addr_a / page, addr_b / page);
         });
     }

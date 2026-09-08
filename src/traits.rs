@@ -41,7 +41,6 @@
 //! ```
 
 #![allow(unsafe_code)]
-
 // `clippy` currently warns when trait functions could be `const fn`s, but this
 // is not actually allowed by the language
 #![allow(clippy::missing_const_for_fn)]
@@ -66,18 +65,18 @@ pub use constant_eq::ConstantEq;
 pub use randomizable::Randomizable;
 pub use zeroable::Zeroable;
 
-unsafe impl Bytes for i8    {}
-unsafe impl Bytes for i16   {}
-unsafe impl Bytes for i32   {}
-unsafe impl Bytes for i64   {}
-unsafe impl Bytes for i128  {}
+unsafe impl Bytes for i8 {}
+unsafe impl Bytes for i16 {}
+unsafe impl Bytes for i32 {}
+unsafe impl Bytes for i64 {}
+unsafe impl Bytes for i128 {}
 unsafe impl Bytes for isize {}
 
-unsafe impl Bytes for u8    {}
-unsafe impl Bytes for u16   {}
-unsafe impl Bytes for u32   {}
-unsafe impl Bytes for u64   {}
-unsafe impl Bytes for u128  {}
+unsafe impl Bytes for u8 {}
+unsafe impl Bytes for u16 {}
+unsafe impl Bytes for u32 {}
+unsafe impl Bytes for u64 {}
+unsafe impl Bytes for u128 {}
 unsafe impl Bytes for usize {}
 
 unsafe impl Bytes for f32 {}

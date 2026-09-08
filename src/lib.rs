@@ -140,7 +140,6 @@
 #![warn(rust_2021_compatibility)]
 #![warn(rust_2024_compatibility)]
 #![warn(unused)]
-
 #![warn(bare_trait_objects)]
 #![warn(dead_code)]
 #![warn(missing_copy_implementations)]
@@ -157,7 +156,6 @@
 #![warn(unused_results)]
 #![warn(unsafe_code)]
 #![warn(variant_size_differences)]
-
 #![warn(clippy::all)]
 #![warn(clippy::pedantic)]
 #![warn(clippy::nursery)]
@@ -176,7 +174,6 @@
 #![warn(clippy::shadow_same)]
 #![warn(clippy::unimplemented)]
 #![warn(clippy::use_debug)]
-
 #![allow(clippy::module_name_repetitions)]
 #![allow(clippy::must_use_candidate)]
 #![allow(clippy::redundant_pub_crate)]
@@ -238,7 +235,7 @@ mod assert {
     /// is performed at least once (and therefore the condition was
     /// tested).
     macro_rules! tested {
-        ($cond:expr)  => ()
+        ($cond:expr) => {};
     }
 }
 
@@ -248,7 +245,7 @@ mod assert {
 mod assert {
     #![allow(unused_macros)]
     macro_rules! proven {
-        ($($arg:tt)*) => ();
+        ($($arg:tt)*) => {};
     }
 
     macro_rules! always {
@@ -298,7 +295,7 @@ mod assert {
 mod assert {
     #![allow(unused_macros)]
     macro_rules! proven {
-        ($($arg:tt)*) => ();
+        ($($arg:tt)*) => {};
     }
 
     macro_rules! always {
@@ -322,7 +319,7 @@ mod assert {
     }
 
     macro_rules! tested {
-        ($cond:expr) => ();
+        ($cond:expr) => {};
     }
 }
 

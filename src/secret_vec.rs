@@ -10,23 +10,22 @@ use std::ops::{Deref, DerefMut};
 /// stack-allocated ones. They provide the following guarantees:
 ///
 /// * any attempt to access the memory without having been borrowed
-///   appropriately will result in immediate program termination; the
-///   memory is protected with [`mprotect(2)`][mprotect] as follows:
-///   * [`PROT_NONE`][mprotect] when the [`SecretVec`] has no
-///     outstanding borrows
-///   * [`PROT_READ`][mprotect] when it has outstanding immutable
+///   appropriately will result in immediate program termination; the memory is
+///   protected with [`mprotect(2)`][mprotect] as follows:
+///   * [`PROT_NONE`][mprotect] when the [`SecretVec`] has no outstanding
 ///     borrows
-///   * [`PROT_WRITE`][mprotect] when it has an outstanding mutable
-///     borrow
-/// * the allocated region has guard pages preceding and following
-///   it—both set to [`PROT_NONE`][mprotect]—ensuring that overflows and
-///   (large enough) underflows cause immediate program termination
-/// * a canary is placed just before the memory location (and after the
-///   guard page) in order to detect smaller underflows; if this memory
-///   has been written to (and the canary modified), the program will
-///   immediately abort when the [`SecretVec`] is [`drop`](Drop)ped
+///   * [`PROT_READ`][mprotect] when it has outstanding immutable borrows
+///   * [`PROT_WRITE`][mprotect] when it has an outstanding mutable borrow
+/// * the allocated region has guard pages preceding and following it—both set
+///   to [`PROT_NONE`][mprotect]—ensuring that overflows and (large enough)
+///   underflows cause immediate program termination
+/// * a canary is placed just before the memory location (and after the guard
+///   page) in order to detect smaller underflows; if this memory has been
+///   written to (and the canary modified), the program will immediately abort
+///   when the [`SecretVec`] is [`drop`](Drop)ped
 /// * [`mlock(2)`][mlock] is called on the underlying memory
-/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in use
+/// * [`munlock(2)`][mlock] is called on the underlying memory when no longer in
+///   use
 /// * the underlying memory is zeroed when no longer in use
 /// * they are best-effort compared in constant time
 /// * they are best-effort prevented from being printed by [`Debug`].
@@ -194,8 +193,7 @@ impl<T: Bytes> SecretVec<T> {
     where
         F: FnOnce(&mut [T]) -> Result<U, E>,
     {
-        Box::try_new(len, |b| f(b.as_mut_slice()))
-            .map(|b| Self { boxed: b })
+        Box::try_new(len, |b| f(b.as_mut_slice())).map(|b| Self { boxed: b })
     }
 
     /// Returns the number of elements in the [`SecretVec`].
@@ -438,7 +436,7 @@ mod test {
     #[test]
     fn it_allows_borrowing_immutably() {
         let secret = SecretVec::<u64>::zero(2);
-        let s      = secret.borrow();
+        let s = secret.borrow();
 
         assert_eq!(*s, [0, 0]);
     }
@@ -446,7 +444,7 @@ mod test {
     #[test]
     fn it_allows_borrowing_mutably() {
         let mut secret = SecretVec::<u64>::zero(2);
-        let mut s      = secret.borrow_mut();
+        let mut s = secret.borrow_mut();
 
         s.clone_from_slice(&[7, 1][..]);
 
@@ -504,7 +502,7 @@ mod test {
 
     #[test]
     fn it_safely_clones_immutable_references() {
-        let secret   = SecretVec::<u8>::random(4);
+        let secret = SecretVec::<u8>::random(4);
         let borrow_1 = secret.borrow();
         let borrow_2 = borrow_1.clone();
 
